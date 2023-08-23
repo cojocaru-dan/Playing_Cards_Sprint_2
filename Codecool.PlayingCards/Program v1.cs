@@ -201,10 +201,12 @@ public class CardGenerator : ICardGenerator
     }
     public List<Card> Generate(DeckDescriptor deckDescriptor)
     {
-        return GenerateCards(deckDescriptor.Numbers, deckDescriptor.Symbols, deckDescriptor.Suits);
+        var iterator = GenerateCards(deckDescriptor.Numbers, deckDescriptor.Symbols, deckDescriptor.Suits).GetEnumerator();
+        iterator.MoveNext();
+        return iterator.Current;
     }
 
-    private List<Card> GenerateCards(int[] numbers, string[] symbols, string[] suits)
+    private IEnumerable<List<Card>> GenerateCards(int[] numbers, string[] symbols, string[] suits)
     {
         List<Card> cards = new List<Card>();
         string[] numbersToString = Array.ConvertAll(numbers, x => x.ToString());
@@ -214,7 +216,7 @@ public class CardGenerator : ICardGenerator
             AddCards(cards, suit, allNumbers);
         }
 
-        return cards;
+        yield return cards;
     }
 
     private void AddCards(List<Card> cards, string suit, string[] numbers)
